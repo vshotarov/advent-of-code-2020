@@ -1,4 +1,7 @@
 use std::io::{self, Read};
+use std::collections::HashSet;
+use std::time::Instant;
+
 
 fn get_input_as_numbers(input: &str) -> Vec<i32> {
     let input_as_lines: Vec<&str> = input.lines().collect();
@@ -14,16 +17,18 @@ fn get_input_as_numbers(input: &str) -> Vec<i32> {
 
 fn solve_part_1(input_as_numbers: &Vec<i32>) -> i32 {
     // Iterate over numbers and find the two that sum to 2020
-    for a in 0..input_as_numbers.len() {
-        let number_a = &input_as_numbers[a];
+    let mut hash_set: HashSet<i32> = HashSet::new();
+    let target: i32 = 2020;
 
-        for b in (a+1)..input_as_numbers.len() {
-            let number_b = &input_as_numbers[b];
+    for i in 0..input_as_numbers.len() {
+        let num: i32 = input_as_numbers[i];
+        let diff: i32 = target - num;
 
-            if number_a + number_b == 2020  {
-                return number_a * number_b;
-            }
+        if hash_set.contains(&diff) {
+            return diff * num;
         }
+
+        hash_set.insert(num);
     }
 
     return -1;
@@ -31,22 +36,26 @@ fn solve_part_1(input_as_numbers: &Vec<i32>) -> i32 {
 
 fn solve_part_2(input_as_numbers: &Vec<i32>) -> i32 {
     // Iterate over numbers and find the two that sum to 2020
-    for a in 0..input_as_numbers.len() {
-        let number_a = &input_as_numbers[a];
+    let target: i32 = 2020;
 
-        for b in (a+1)..input_as_numbers.len() {
-            let number_b = &input_as_numbers[b];
+    for i in 0..input_as_numbers.len() {
+        let num_a: i32 = input_as_numbers[i];
+        let mut hash_set: HashSet<i32> = HashSet::new();
+        let inbetween_target: i32 = target - num_a;
 
-            for c in (b+1)..input_as_numbers.len() {
-                let number_c = &input_as_numbers[c];
-                if number_a + number_b + number_c == 2020  {
-                    return number_a * number_b * number_c;
-                }
+        for j in i..input_as_numbers.len() {
+            let num_b: i32 = input_as_numbers[j];
+            let diff: i32 = inbetween_target - num_b;
+
+            if hash_set.contains(&diff) {
+                return diff * num_a * num_b;
             }
+
+            hash_set.insert(num_b);
         }
     }
 
-     return -1;
+    return -1;
 }
 
 fn main() -> std::io::Result<()> {
@@ -55,8 +64,12 @@ fn main() -> std::io::Result<()> {
 
     let input_as_numbers: Vec<i32> = get_input_as_numbers(&input);
 
+    let before_part1 = Instant::now();
     println!("Part 1: {}", solve_part_1(&input_as_numbers));
+    println!("Part 1 took {:.2?}", before_part1.elapsed());
+    let before_part2 = Instant::now();
     println!("Part 2: {}", solve_part_2(&input_as_numbers));
+    println!("Part 2 took {:.2?}", before_part2.elapsed());
 
     Ok(())
 }
