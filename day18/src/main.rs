@@ -77,9 +77,11 @@ fn bracketize_addition(input: &str) -> String {
         _ => 0});
     let mut num_processed_additions = 0;
     let mut bracketized: String = input.to_string();
+
     while num_processed_additions < num_additions {
         let mut input_copy = bracketized.to_string();
         let mut num_seen_additions = 0;
+
         for (i,x) in bracketized.chars().enumerate() {
             if x == '+' {
                 if num_seen_additions < num_processed_additions {
@@ -94,9 +96,9 @@ fn bracketize_addition(input: &str) -> String {
                     pointer -= 1;
                     match &bracketized[pointer..(pointer+1)] {
                         ")" => level += 1,
-                        "(" => { level -= 1; if level == 0 {break;} }
-                        " " => { if look_for_space {break;} }
-                        "+" => { if level == 0 {break;} },
+                        "(" => { level -= 1; if level == 0 { break; }}
+                        " " => { if look_for_space { break; }}
+                        "+" => { if level == 0 { break; }},
                         _ => { if level == 0 { look_for_space = true; }}
                     }
                 }
@@ -106,6 +108,7 @@ fn bracketize_addition(input: &str) -> String {
                 else {
                     input_copy.insert_str(pointer, "(");
                 }
+
                 // find right side
                 pointer = i;
                 level = 0;
@@ -114,9 +117,9 @@ fn bracketize_addition(input: &str) -> String {
                     pointer += 1;
                     match &bracketized[pointer..(pointer+1)] {
                         "(" => level += 1,
-                        ")" => { level -= 1; if level == 0 {break;} }
-                        " " => { if look_for_space {break;} }
-                        "+" => { if level == 0 {break;} },
+                        ")" => { level -= 1; if level == 0 { break; }}
+                        " " => { if look_for_space { break; }}
+                        "+" => { if level == 0 { break; }},
                         _ => { if level == 0 { look_for_space = true; }}
                     }
                 }
@@ -131,10 +134,7 @@ fn bracketize_addition(input: &str) -> String {
             }
         }
         num_processed_additions += 1;
-        bracketized = input_copy.to_string()
-            .replace(")*",") *").replace("  "," ")
-            .replace("*(","* (").replace(")+",") +")
-            .replace("+(","+ (").replace(" )",")").replace("( ","(");
+        bracketized = input_copy.to_string();
     }
     bracketized
 }
